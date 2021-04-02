@@ -1,12 +1,21 @@
 version: '2'
+networks:
+  proxy:
+    external: true
 services:
   web:
     image: alxshelepenok/gatsby-starter-lumen:production
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wplab-secure.rule=Host(`jith.dev`) || Host(`www.jith.dev`)"
+      - "traefik.http.routers.wplab-secure.tls=true"
+      - "traefik.http.routers.wplab-secure.tls.certresolver=http"
+    networks:
+      - proxy
     build:
       context: ./
       dockerfile: Dockerfile.production
     tty: true
+    container_name: jithdotdev
     volumes:
       - ./:/usr/src/app
-    ports:
-      - "80:80"
